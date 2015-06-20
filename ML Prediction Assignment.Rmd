@@ -1,5 +1,5 @@
 ---
-title: "ML Prediction Assignment"
+title: "PML Prediction Assignment"
 author: "Milind"
 output: html_document
 ---
