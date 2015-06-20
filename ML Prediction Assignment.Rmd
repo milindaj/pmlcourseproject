@@ -5,7 +5,7 @@ output: html_document
 ---
 
 ## Executive summary
-In this study, our goal will be to use the Human Activity Recognition data which is made available by Groupware@LES and build model to predict user actions. This data contains readings from accelerometers mounted on the belt, forearm, arm, and dumbell of 6 participants. The participants were asked to perform barbell lifts correctly and incorrectly in 5 different ways. You can read more on about the data data and other details in the [Groupware@LES](http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises#ixzz35JVTyesz) website. 
+In this study, our goal will be to use the Human Activity Recognition data and build model to predict user actions. This data contains readings from accelerometers mounted on the belt, forearm, arm, and dumbell of 6 participants. The participants were asked to perform barbell lifts correctly and incorrectly in 5 different ways. You can read more about the data and other details in the *Groupware @ LES* website.
 
 The main objectives of this study are to
 
@@ -15,10 +15,10 @@ The main objectives of this study are to
 * Use the model developed to predict 20 different test cases provided
 
 ## Load and preprocess data
-We will first download the available data and do a little bit of cleaning looking at the variables. 
+We will first download the available data and do a little bit of cleaning. Here its assumed that data files are downloaded and working directory is set. Alteratively we can download the data from website through R and load it.
 
-```{r, results='hide'}
-# Load the required libraries 
+```{r, results='hide', message=FALSE, warning=FALSE}
+## Load the required libraries 
 library(caret);library(randomForest); library(doParallel); library(foreach); library(corrplot);
 ```
 
@@ -29,20 +29,16 @@ set.seed(12345) ## for reproducability
 ## setup parallel processing environment
 registerDoParallel(makeCluster(detectCores()-1))
 
-## read the data into R. Here its assumed that data files are downloaded and working directory is set. Alteratively we can download the data from website through R and load it. But I am skipping that step
-
-# Load training and testing data, considering the strings 'NA', 'NULL' and blank spaces to be NA values
+## Load training and testing data, considering the strings 'NA', 'NULL' and blank spaces to be NA values
 trainData <- read.csv('pml-training.csv', na.strings=c('', 'NA', 'NULL'))
 testData <- read.csv('pml-testing.csv', na.strings=c('', 'NA', 'NULL'))
 
 dim(trainData)
-
 ```
-Looking at the csv sheet we can see that there any columns with lot of NAs. We can reconfirm this as a precursor for further cleanup
+Looking at the csv sheet we can see that there many columns with lot of NAs. We can reconfirm this as a precursor for further cleanup
 
 ```{r}
 sum(complete.cases(trainData))
-
 ```
 
 Remove columns with significant missing or NA values. Here assuming columns with > **90%** NA as not needed.Also remove first 7 colmns which are not needed in prediction. If these (variables) are retains they will instead misslead the fit.
@@ -92,12 +88,11 @@ system.time(
     rfModel <- randomForest(classe~., data=training, ntree = 500)
 )
 
-#predict on testing data
+##predict on testing data
 pred = predict(rfModel, newdata = testing)
 
-#build confusion matrix
+##build confusion matrix
 (confM <- confusionMatrix(pred, testing$classe))
-
 ```
 
 As we can see, this model gives **`r paste(round(confM$overall["Accuracy"]*100,2),"%", sep="")`** out of sample accuracy which is sufficient for the purpose of this assignment. In sample accuracy is **100%** which is as expected.
@@ -119,18 +114,18 @@ results <- predict(rfModel, testData)
 
 ## Appendix
 
-**1. Correlation matrix between the predictor variables**
+**Figure 1. Correlation matrix between the predictor variables**
 
 ```{r}
 corrPlot <- cor(training[, -length(names(training))])
 corrplot(corrPlot, method="color")
 ```
 
-**2. Plots showing relation of 1st 10 predictor variables with class**
+**Figure 2. Plots showing relation of 1^st^ 10 predictor variables with class**
 
 ```{r}
   par(mfrow = c(2, 5), mar = c(6, 4, 4, 2), oma = c(0, 0, 2, 0))
-  m <- training[,53] #classe variables
+  m <- training[,53] ##classe variables
   names <- colnames(training)
 
   draw_scatter <- function(m, x, name) {
@@ -145,8 +140,11 @@ corrplot(corrPlot, method="color")
 
 ```
 
-**3. Variable Importance Plot for the generated model**
+**Figure 3. Variable Importance Plot for the generated model**
 
 ```{r}
 varImpPlot(rfModel)
 ```
+
+## Reference
+You can read more about the HAR data which is used in this assignment from the website - <http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises#ixzz35JVTyesz>
