@@ -5,7 +5,7 @@ output: html_document
 ---
 
 ## Executive summary
-In this study, our goal will be to use the Human Activity Recognition data which is made available by [Groupware@LES][1] and build model to predict user actions. This data contains readings from accelerometers mounted on the belt, forearm, arm, and dumbell of 6 participants. The participants were asked to perform barbell lifts correctly and incorrectly in 5 different ways. You can read more on about the data data and other details in the [Groupware@LES][1] website. 
+In this study, our goal will be to use the Human Activity Recognition data which is made available by Groupware@LES and build model to predict user actions. This data contains readings from accelerometers mounted on the belt, forearm, arm, and dumbell of 6 participants. The participants were asked to perform barbell lifts correctly and incorrectly in 5 different ways. You can read more on about the data data and other details in the [Groupware@LES](http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises#ixzz35JVTyesz) website. 
 
 The main objectives of this study are to
 
@@ -17,10 +17,9 @@ The main objectives of this study are to
 ## Load and preprocess data
 We will first download the available data and do a little bit of cleaning looking at the variables. 
 
-```{r, echo=FALSE}
+```{r, results='hide'}
 # Load the required libraries 
 library(caret);library(randomForest); library(doParallel); library(foreach); library(corrplot);
-
 ```
 
 ```{r}
@@ -151,5 +150,3 @@ corrplot(corrPlot, method="color")
 ```{r}
 varImpPlot(rfModel)
 ```
-
-[1]: http://groupware.les.inf.puc-rio.br/har#weight_lifting_exercises#ixzz35JVTyesz
